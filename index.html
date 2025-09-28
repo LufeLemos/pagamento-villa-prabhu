@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pagamento – VILLA PRABHU</title>
+  <meta name="description" content="Página de pagamento com botões para copiar PIX e dados bancários." />
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    body { background:#f6f7f9; margin:0; display:flex; min-height:100vh; align-items:center; justify-content:center; }
+    .card { background:#fff; width:min(760px, 94%); padding:30px; border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,.08); }
+    h1 { margin:0 0 6px; font-size:24px; }
+    .brand { color:#0d6efd; font-weight:800; }
+    .sub { margin:0 0 18px; color:#555; }
+    .group { margin:20px 0; }
+    .label { font-weight:700; margin-bottom:6px; color:#222; }
+    .row { display:flex; gap:10px; margin:10px 0 12px; }
+    input { flex:1; padding:14px 12px; border:1px solid #d8dde3; border-radius:12px; font-size:16px; background:#fafbfc; }
+    button { padding:12px 16px; border:0; border-radius:12px; cursor:pointer; font-weight:700; font-size:15px; background:#0d6efd; color:#fff; }
+    .ok { color:#137333; font-weight:600; display:none; margin:8px 0 0; }
+    .err { color:#b3261e; font-weight:600; display:none; margin:8px 0 0; }
+    .muted { font-size:.9rem; color:#666; }
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .three { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    @media (max-width:620px) { .two, .three { grid-template-columns:1fr; } }
+    footer { margin-top:18px; font-size:.85rem; color:#777; }
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <h1>Dados para pagamento – <span class="brand">VILLA PRABHU</span></h1>
+    <p class="sub">Clique nos botões para copiar automaticamente. Se o navegador bloquear, selecione o texto e copie manualmente.</p>
+
+    <section class="group">
+      <div class="label">PIX (Chave CNPJ)</div>
+      <div class="row">
+        <input id="pix" type="text" value="55606821000168" readonly aria-label="Chave PIX (CNPJ numérico)" />
+        <button data-key="pix">Copiar PIX</button>
+      </div>
+      <div class="label">CNPJ</div>
+      <div class="row">
+        <input id="cnpj" type="text" value="55.606.821/0001-68" readonly aria-label="CNPJ formatado" />
+        <button data-key="cnpj">Copiar CNPJ</button>
+      </div>
+    </section>
+
+    <section class="group">
+      <div class="label">Transferência (TED)</div>
+      <div class="three">
+        <div>
+          <div class="label">Banco</div>
+          <div class="row">
+            <input id="bank" type="text" value="Preencher nome e código do banco" readonly aria-label="Banco" />
+            <button data-key="bank">Copiar</button>
+          </div>
+        </div>
+        <div>
+          <div class="label">Agência</div>
+          <div class="row">
+            <input id="ag" type="text" value="8142" readonly aria-label="Agência" />
+            <button data-key="ag">Copiar</button>
+          </div>
+        </div>
+        <div>
+          <div class="label">Conta</div>
+          <div class="row">
+            <input id="cc" type="text" value="98982-4" readonly aria-label="Conta" />
+            <button data-key="cc">Copiar</button>
+          </div>
+        </div>
+      </div>
+      <div class="two">
+        <div>
+          <div class="label">Tipo de conta</div>
+          <div class="row">
+            <input id="accttype" type="text" value="Conta Corrente" readonly aria-label="Tipo de conta" />
+            <button data-key="accttype">Copiar</button>
+          </div>
+        </div>
+        <div>
+          <div class="label">Favorecido</div>
+          <div class="row">
+            <input id="fav" type="text" value="VILLA PRABHU" readonly aria-label="Favorecido" />
+            <button data-key="fav">Copiar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px;">
+        <button id="copyall" style="background:#198754;">Copiar tudo</button>
+      </div>
+    </section>
+
+    <div id="ok" class="ok">✅ Copiado!</div>
+    <div id="err" class="err">⚠️ Não foi possível copiar automaticamente.</div>
+    <footer>© VILLA PRABHU</footer>
+  </main>
+
+  <script>
+    const ids = ["pix","cnpj","bank","ag","cc","accttype","fav"];
+    const ok = document.getElementById("ok");
+    const err = document.getElementById("err");
+    function show(el) { el.style.display = "block"; setTimeout(()=> el.style.display = "none", 2400); }
+    async function copyText(text) {
+      ok.style.display = "none"; err.style.display = "none";
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text); show(ok); return;
+        }
+        const ta = document.createElement("textarea");
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); document.body.removeChild(ta); show(ok);
+      } catch (e) { show(err); }
+    }
+    document.querySelectorAll("button[data-key]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-key");
+        const v = document.getElementById(id).value;
+        copyText(v);
+      });
+    });
+    document.getElementById("copyall").addEventListener("click", () => {
+      const bundle = ids.map(id => document.getElementById(id).value).join("\n");
+      copyText(bundle);
+    });
+  </script>
+</body>
+</html>
