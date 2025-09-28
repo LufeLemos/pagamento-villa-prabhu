@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pagamento – VILLA PRABHU</title>
+  <meta name="description" content="Página de pagamento com botões para copiar PIX, CNPJ e dados bancários." />
+  <style>
+    :root {
+      --brand-bg: #E3CBAA;
+      --brand-name: #955127;
+      --btn: #5E6F57;
+      --text: #1c1c1c;
+      --muted: #3d3d3d;
+      --field-border: rgba(0,0,0,.25);
+      --field-bg: rgba(255,255,255,.45);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--brand-bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      display: grid;
+      place-items: center;
+    }
+    main {
+      width: min(900px, 92vw);
+      padding: clamp(16px, 3vw, 28px);
+    }
+    h1 { margin: 0 0 6px; font-size: clamp(22px, 3.6vw, 32px); line-height: 1.2; }
+    .brand { color: var(--brand-name); font-weight: 800; }
+    .sub { margin: 0 0 14px; color: var(--muted); }
+    section { margin: 18px 0 22px; }
+    .label { font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .row { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin: 8px 0 10px; }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 12px;
+      border: 1px solid var(--field-border);
+      border-radius: 12px;
+      background: var(--field-bg);
+      font-size: 16px;
+      color: var(--text);
+    }
+    button {
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 15px;
+      background: var(--btn);
+      color: #fff;
+      transition: transform .02s ease, filter .15s ease;
+      white-space: nowrap;
+    }
+    button:active { transform: scale(.98); }
+    .two { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .three { display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    @media (max-width: 780px) { .three { grid-template-columns: 1fr; } }
+    @media (max-width: 560px) { .two { grid-template-columns: 1fr; } }
+    .muted { font-size: .95rem; color: var(--muted); }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%) translateY(20px);
+      background: #111;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.28);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    footer { margin-top: 22px; font-size: .95rem; color: var(--muted); }
+    .email-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+    a.mail { color: var(--brand-name); font-weight: 800; text-decoration: none; }
+    a.mail:hover { text-decoration: underline; filter: brightness(0.95); }
+  </style>
+</head>
+<body>
+  <main role="main">
+    <h1>Dados para pagamento – <span class="brand">VILLA PRABHU</span></h1>
+    <p class="sub">Clique em <strong>Copiar</strong> para enviar os dados à sua área de transferência.</p>
+
+    <section aria-labelledby="pix-title">
+      <div id="pix-title" class="label">PIX (Chave CNPJ)</div>
+      <div class="row">
+        <input id="pix" type="text" value="55606821000168" readonly aria-label="Chave PIX (CNPJ numérico)" />
+        <button data-key="pix" aria-label="Copiar PIX">Copiar</button>
+      </div>
+      <div class="label">CNPJ</div>
+      <div class="row">
+        <input id="cnpj" type="text" value="55.606.821/0001-68" readonly aria-label="CNPJ formatado" />
+        <button data-key="cnpj" aria-label="Copiar CNPJ">Copiar</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="ted-title">
+      <div id="ted-title" class="label">Transferência (TED)</div>
+      <div class="three">
+        <div>
+          <div class="label">Banco</div>
+          <div class="row">
+            <input id="bank" type="text" value="Preencher nome e código do banco" readonly aria-label="Banco" />
+            <button data-key="bank" aria-label="Copiar banco">Copiar</button>
+          </div>
+        </div>
+        <div>
+          <div class="label">Agência</div>
+          <div class="row">
+            <input id="ag" type="text" value="8142" readonly aria-label="Agência" />
+            <button data-key="ag" aria-label="Copiar agência">Copiar</button>
+          </div>
+        </div>
+        <div>
+          <div class="label">Conta</div>
+          <div class="row">
+            <input id="cc" type="text" value="98982-4" readonly aria-label="Conta" />
+            <button data-key="cc" aria-label="Copiar conta">Copiar</button>
+          </div>
+        </div>
+      </div>
+      <div class="two">
+        <div>
+          <div class="label">Tipo de conta</div>
+          <div class="row">
+            <input id="accttype" type="text" value="Conta Corrente" readonly aria-label="Tipo de conta" />
+            <button data-key="accttype" aria-label="Copiar tipo de conta">Copiar</button>
+          </div>
+        </div>
+        <div>
+          <div class="label">Favorecido</div>
+          <div class="row">
+            <input id="fav" type="text" value="VILLA PRABHU" readonly aria-label="Favorecido" />
+            <button data-key="fav" aria-label="Copiar favorecido">Copiar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="comprovante-title">
+      <div id="comprovante-title" class="label">Comprovante</div>
+      <p class="muted">
+        Por questão de segurança, <strong>envie o comprovante</strong> para
+        <a class="mail" href="mailto:contasreceber@bianchiurbanismo.com.br">contasreceber@bianchiurbanismo.com.br</a>.
+      </p>
+      <div class="email-row">
+        <input id="email" type="text" value="contasreceber@bianchiurbanismo.com.br" readonly aria-label="E-mail para envio do comprovante" />
+        <button data-key="email" aria-label="Copiar e-mail">Copiar e-mail</button>
+      </div>
+    </section>
+
+    <footer>© VILLA PRABHU</footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">Copiado!</div>
+
+  <script>
+    const ids = ["pix","cnpj","bank","ag","cc","accttype","fav","email"];
+    const toast = document.getElementById("toast");
+
+    function showToast(msg) {
+      toast.textContent = msg || "Copiado!";
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1600);
+    }
+
+    async function copyText(text) {
+      const clean = (text || "").trim();
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(clean);
+          showToast("Copiado!");
+          return;
+        }
+        const ta = document.createElement("textarea");
+        ta.value = clean;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast("Copiado!");
+      } catch (e) {
+        showToast("Falhou. Copie manualmente.");
+      }
+    }
+
+    document.querySelectorAll("button[data-key]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-key");
+        const v = document.getElementById(id).value;
+        copyText(v);
+      });
+    });
+  </script>
+</body>
+</html>
